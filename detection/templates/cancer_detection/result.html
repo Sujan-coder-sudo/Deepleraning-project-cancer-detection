@@ -1,0 +1,11 @@
+{% extends 'cancer_detection/base.html' %}
+
+{% block title %}Results - Cancer Detection{% endblock %}
+
+{% block content %}
+<h2>Prediction Results</h2>
+<img src="{{ medical_image.image.url }}" alt="Uploaded medical image" style="max-width: 300px;">
+<p>Prediction: {{ medical_image.prediction }}</p>
+<p>Uploaded at: {{ medical_image.uploaded_at }}</p>
+<a href="{% url 'upload' %}" class="btn btn-primary">Upload Another Image</a>
+{% endblock %}

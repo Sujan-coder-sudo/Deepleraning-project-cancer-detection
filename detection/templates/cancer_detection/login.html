@@ -1,0 +1,13 @@
+{% extends 'cancer_detection/base.html' %}
+
+{% block title %}Login - Cancer Detection{% endblock %}
+
+{% block content %}
+<h2>Login</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Login</button>
+</form>
+{% endblock %}
+

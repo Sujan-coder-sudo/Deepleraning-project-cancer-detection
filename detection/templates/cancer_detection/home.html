@@ -1,0 +1,14 @@
+{% extends 'cancer_detection/base.html' %}
+
+{% block title %}Home - Cancer Detection{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to Cancer Detection</h1>
+    <p class="lead">Our AI-powered system can help detect and classify cancer from medical images.</p>
+    <hr class="my-4">
+    <p>Upload your medical images and get instant results.</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'upload' %}" role="button">Start Now</a>
+</div>
+{% endblock %}
+
