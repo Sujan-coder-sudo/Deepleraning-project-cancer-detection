@@ -1,0 +1,99 @@
+{% extends 'cancer_detection/base.html' %}
+{% load static %}
+
+{% block title %}Upload - Cancer Detection{% endblock %}
+
+{% block content %}
+<style>
+    .upload-container {
+        background-image: url('{% static "images/tech_background.jpg" %}');
+        background-size: cover;
+        background-position: center;
+        border-radius: 15px;
+        padding: 2rem;
+        color: white;
+    }
+    .drop-zone {
+        border: 2px dashed #fff;
+        border-radius: 10px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .drop-zone.highlight {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    .drop-zone i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="upload-container">
+            <h2 class="text-center mb-4">Upload Medical Image</h2>
+            <form method="post" enctype="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <div class="drop-zone" id="drop-zone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Drag and drop your image here or click to select</p>
+                    <input type="file" name="image" id="file-input" style="display: none;" accept="image/*">
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-microscope me-2"></i>Analyze Image
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('highlight');
+    }
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        fileInput.files = files;
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            dropZone.querySelector('p').textContent = `File selected: ${fileInput.files[0].name}`;
+        }
+    });
+</script>
+{% endblock %}
+

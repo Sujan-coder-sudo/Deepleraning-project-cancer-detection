@@ -4,6 +4,17 @@ from django.contrib.auth.decorators import login_required
 from .models import MedicalImage
 from .forms import MedicalImageForm
 from .ml_model import predict_cancer
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import reverse_lazy
+
+# Include the LoginView in your app
+class CustomLoginView(LoginView):
+    template_name = 'cancer_detection/login.html'
+    redirect_authenticated_user = True
+
+# Logout view
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy('home')
 
 def home(request):
     return render(request, 'cancer_detection/home.html')
@@ -43,7 +54,7 @@ def upload(request):
 @login_required
 def results(request, pk):
     medical_image = MedicalImage.objects.get(pk=pk)
-    return render(request, 'cancer_detection/results.html', {'medical_image': medical_image})
+    return render(request, 'cancer_detection/result.html', {'medical_image': medical_image})
 
 
 

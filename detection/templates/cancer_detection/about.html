@@ -3,7 +3,34 @@
 {% block title %}About - Cancer Detection{% endblock %}
 
 {% block content %}
-<h1>About Cancer Detection</h1>
-<p>Our project uses advanced machine learning and deep learning techniques to analyze medical images and detect cancer. We aim to assist radiologists in early diagnosis and reduce the time needed for image interpretation.</p>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">About Cancer Detection Project</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Developer: Sujan Rathod</h5>
+                <p class="card-text">
+                    This Cancer Detection project is an advanced application of machine learning and deep learning techniques in medical imaging. It aims to assist radiologists in the early detection and classification of cancer from medical images such as MRIs and CT scans.
+                </p>
+                <p class="card-text">
+                    Using state-of-the-art convolutional neural networks (CNNs), our model has been trained on a large dataset of labeled medical images to identify malignant tumors and distinguish between different types of cancer. This project demonstrates the potential of AI in healthcare, particularly in enhancing the accuracy and speed of cancer diagnosis.
+                </p>
+                <p class="card-text">
+                    Key features of this project include:
+                </p>
+                <ul>
+                    <li>Advanced image processing techniques</li>
+                    <li>Deep learning model using TensorFlow and Keras</li>
+                    <li>User-friendly interface for image upload and analysis</li>
+                    <li>Secure handling of sensitive medical data</li>
+                    <li>Integration with Django web framework for scalability</li>
+                </ul>
+                <p class="card-text">
+                    While this tool is designed to aid medical professionals, it is not intended to replace expert medical advice. Always consult with a qualified healthcare provider for proper diagnosis and treatment.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 

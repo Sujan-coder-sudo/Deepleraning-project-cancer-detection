@@ -1,43 +1,9 @@
 import os
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow import keras
 from sklearn.model_selection import train_test_split
-
-def preprocess_data(base_dir, img_size=(50, 50)):
-    images = []
-    labels = []
-    
-    print(f"Base directory: {base_dir}")
-    
-    for root, dirs, files in os.walk(base_dir):
-        for file in files:
-            if file.lower().endswith(('.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp')):
-                img_path = os.path.join(root, file)
-                print(f"Processing file: {img_path}")
-                
-                try:
-                    img = tf.keras.preprocessing.image.load_img(img_path, target_size=img_size)
-                    img_array = tf.keras.preprocessing.image.img_to_array(img)
-                    images.append(img_array)
-                    
-                    # Determine label based on directory name
-                    if 'class1' in root.lower() or '1' in file.split('_')[2]:
-                        labels.append(1)
-                    else:
-                        labels.append(0)
-                    
-                    print(f"Successfully processed {img_path}")
-                except Exception as e:
-                    print(f"Error processing image {img_path}: {str(e)}")
-                    continue
-    
-    if not images:
-        raise ValueError("No valid images found in the dataset")
-    
-    print(f"Total images processed: {len(images)}")
-    return np.array(images), np.array(labels)
 
 def create_model(input_shape):
     model = keras.Sequential([
@@ -53,50 +19,72 @@ def create_model(input_shape):
     ])
     
     model.compile(optimizer='adam',
-                 loss='binary_crossentropy',
-                 metrics=['accuracy'])
+                  loss='binary_crossentropy',
+                  metrics=['accuracy'])
     
     return model
 
-def train_model():
-    data_dir = './data'
+def preprocess_with_generator(base_dir, img_size=(50, 50), batch_size=32):
+    """
+    Use ImageDataGenerator to preprocess and load data in batches.
+    """
+    datagen = ImageDataGenerator(
+        rescale=1.0 / 255.0,
+        rotation_range=20,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        horizontal_flip=True,
+        validation_split=0.2  # Reserve 20% of the data for validation
+    )
     
+    train_generator = datagen.flow_from_directory(
+        base_dir,
+        target_size=img_size,
+        batch_size=batch_size,
+        class_mode='binary',
+        subset='training'
+    )
+    
+    validation_generator = datagen.flow_from_directory(
+        base_dir,
+        target_size=img_size,
+        batch_size=batch_size,
+        class_mode='binary',
+        subset='validation'
+    )
+    
+    return train_generator, validation_generator
+
+def train_model():
+    base_dir = './data'
+    img_size = (50, 50)
+    batch_size = 32
+
     print("Starting data preprocessing...")
-    print(f"Looking for images in: {os.path.abspath(data_dir)}")
     
     try:
-        images, labels = preprocess_data(data_dir)
-        print(f"Found {len(images)} images with {sum(labels)} positive cases")
+        train_gen, val_gen = preprocess_with_generator(base_dir, img_size, batch_size)
     except Exception as e:
         print(f"Error during preprocessing: {str(e)}")
         return
     
-    X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2, random_state=42)
+    print(f"Training samples: {train_gen.samples}")
+    print(f"Validation samples: {val_gen.samples}")
     
-    X_train = X_train.astype('float32') / 255.0
-    X_test = X_test.astype('float32') / 255.0
-    
-    model = create_model(X_train.shape[1:])
-    
-    datagen = ImageDataGenerator(
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        horizontal_flip=True
-    )
+    model = create_model((img_size[0], img_size[1], 3))
     
     print("Starting model training...")
     history = model.fit(
-        datagen.flow(X_train, y_train, batch_size=32),
+        train_gen,
         epochs=20,
-        validation_data=(X_test, y_test),
+        validation_data=val_gen,
         callbacks=[
             keras.callbacks.EarlyStopping(patience=3, restore_best_weights=True),
             keras.callbacks.ReduceLROnPlateau(factor=0.5, patience=2)
         ]
     )
     
-    test_loss, test_acc = model.evaluate(X_test, y_test, verbose=2)
+    test_loss, test_acc = model.evaluate(val_gen, verbose=2)
     print(f"Test accuracy: {test_acc}")
     
     model.save('cancer_detection_model.h5')
@@ -116,4 +104,3 @@ def predict_cancer(image_path):
 
 if __name__ == "__main__":
     train_model()
-

@@ -3,12 +3,34 @@
 {% block title %}Home - Cancer Detection{% endblock %}
 
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Welcome to Cancer Detection</h1>
-    <p class="lead">Our AI-powered system can help detect and classify cancer from medical images.</p>
-    <hr class="my-4">
-    <p>Upload your medical images and get instant results.</p>
-    <a class="btn btn-primary btn-lg" href="{% url 'upload' %}" role="button">Start Now</a>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="text-center mb-4">Welcome to Cancer Detection AI</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Project Overview</h5>
+                <p class="card-text">
+                    Our Cancer Detection AI project leverages cutting-edge machine learning and deep learning techniques to analyze medical images and assist in the early detection of cancer. By processing MRI and CT scan images, our system can identify potential malignancies with high accuracy, providing valuable insights to healthcare professionals.
+                </p>
+                <h5 class="card-title mt-4">Key Features</h5>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item"><i class="fas fa-brain me-2 text-primary"></i>Advanced neural network architecture for image analysis</li>
+                    <li class="list-group-item"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Rapid processing of medical images</li>
+                    <li class="list-group-item"><i class="fas fa-chart-line me-2 text-primary"></i>High accuracy in detecting various types of cancer</li>
+                    <li class="list-group-item"><i class="fas fa-lock me-2 text-primary"></i>Secure handling of sensitive medical data</li>
+                    <li class="list-group-item"><i class="fas fa-users me-2 text-primary"></i>User-friendly interface for medical professionals</li>
+                </ul>
+                <p class="card-text">
+                    Our AI model has been trained on a vast dataset of medical images, enabling it to recognize patterns and anomalies that may indicate the presence of cancer. While this tool is designed to augment the capabilities of healthcare professionals, it is not a substitute for expert medical diagnosis.
+                </p>
+                <div class="text-center mt-4">
+                    <a href="{% url 'upload' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-upload me-2"></i>Upload Image for Analysis
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
